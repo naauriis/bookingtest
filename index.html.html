@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <title>TESTA REZERVĀCIJA</title>
+</head>
+<body>
+  <form id="bookingForm">
+    <input name="name" placeholder="Vārds" required><br>
+    <input name="email" placeholder="E-pasts" required><br>
+    <input name="subject" placeholder="Priekšmets" required><br>
+    <input name="datetime" placeholder="Datums un laiks" required><br>
+    <button>Rezervēt</button>
+  </form>
+  <div id="result"></div>
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyjrFEB4kkN-uy89MTCqWev4qSuAQuTxJB69-tfs0v8UZUaOo63HvmhQ5jdO0ltjccY/exec";
+    document.getElementById('bookingForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        datetime: form.datetime.value
+      };
+      let resultText = document.getElementById('result');
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if(result.success) {
+          resultText.style.color = "green";
+          resultText.textContent = "Veiksmīgi!";
+        } else {
+          resultText.style.color = "red";
+          resultText.textContent = "Kļūda: " + (result.message || "");
+        }
+      } catch {
+        resultText.style.color = "red";
+        resultText.textContent = "Kļūda: Savienojuma vai servera kļūda!";
+      }
+    };
+  </script>
+</body>
+</html>
